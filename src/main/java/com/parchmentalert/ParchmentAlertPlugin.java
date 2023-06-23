@@ -1,4 +1,4 @@
-package com.example;
+package com.parchmentalert;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -16,13 +17,13 @@ import net.runelite.client.plugins.PluginDescriptor;
 @PluginDescriptor(
 	name = "Example"
 )
-public class ExamplePlugin extends Plugin
+public class ParchmentAlertPlugin extends Plugin
 {
 	@Inject
 	private Client client;
 
 	@Inject
-	private ExampleConfig config;
+	private ParchmentAlertConfig config;
 
 	@Override
 	protected void startUp() throws Exception
@@ -41,13 +42,19 @@ public class ExamplePlugin extends Plugin
 	{
 		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
 		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
+//			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
 		}
 	}
+	@Subscribe
+	public void onClientTick(ClientTick clientTick)
+	{
+
+	}
+
 
 	@Provides
-	ExampleConfig provideConfig(ConfigManager configManager)
+	ParchmentAlertConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(ExampleConfig.class);
+		return configManager.getConfig(ParchmentAlertConfig.class);
 	}
 }
