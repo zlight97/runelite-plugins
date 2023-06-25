@@ -51,7 +51,11 @@ public class ParchmentAlertPlugin extends Plugin
 	protected void startUp() throws Exception
 	{
 		isRunning = true;
-		update();
+
+		thread.invokeLater(() ->
+		{
+			update();
+		});
 	}
 
 	@Override
@@ -72,7 +76,10 @@ public class ParchmentAlertPlugin extends Plugin
 		if(unparchedNames!=null)
 			unparchedNames.clear();
 
-		update();
+		thread.invokeLater(() ->
+		{
+			update();
+		});
 	}
 
 	private void update()
