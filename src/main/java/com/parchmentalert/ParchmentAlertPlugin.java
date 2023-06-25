@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.GameTick;
 import net.runelite.client.Notifier;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -61,9 +62,8 @@ public class ParchmentAlertPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onClientTick(ClientTick clientTick)
+	public void onGameTick(GameTick gameTick)
 	{
-//		if(config.willNotify() == ParchmentAlertConfig.HighlightSetting.PVP)
 		update();
 	}
 	@Subscribe
@@ -77,32 +77,29 @@ public class ParchmentAlertPlugin extends Plugin
 
 	private void update()
 	{
-		thread.invokeLater(() ->
-		{
-			if (config.willNotify() == ParchmentAlertConfig.HighlightSetting.ENABLED ||
-					(config.willNotify() == ParchmentAlertConfig.HighlightSetting.PVP &&
-					(client.getVarbitValue(Varbits.IN_WILDERNESS) == 1 || client.getVarbitValue(Varbits.PVP_SPEC_ORB) == 1))) {
-				ArrayList<Integer> unparchedItems = service.getItems();
-				HashSet<String> unparchedNames = new HashSet<>();
-				unparchedNames.clear();
-				if (unparchedItems.size() == 0) {
-					overlayManager.remove(overlay);
-					return;
-				}
-				for (Integer i : unparchedItems) {
-					ItemComposition ip = client.getItemDefinition(i.intValue());
-					unparchedNames.add(ip.getName());
-				}
-				if (config.showNames()) {
-					this.unparchedNames = unparchedNames;
-				}
-				overlayManager.add(overlay);
-
-
-			} else {
+		if (config.willNotify() == ParchmentAlertConfig.HighlightSetting.ENABLED ||
+				(config.willNotify() == ParchmentAlertConfig.HighlightSetting.PVP &&
+				(client.getVarbitValue(Varbits.IN_WILDERNESS) == 1 || client.getVarbitValue(Varbits.PVP_SPEC_ORB) == 1))) {
+			ArrayList<Integer> unparchedItems = service.getItems();
+			HashSet<String> unparchedNames = new HashSet<>();
+			unparchedNames.clear();
+			if (unparchedItems.size() == 0) {
 				overlayManager.remove(overlay);
+				return;
 			}
-		});
+			for (Integer i : unparchedItems) {
+				ItemComposition ip = client.getItemDefinition(i.intValue());
+				unparchedNames.add(ip.getName());
+			}
+			if (config.showNames()) {
+				this.unparchedNames = unparchedNames;
+			}
+			overlayManager.add(overlay);
+
+
+		} else {
+			overlayManager.remove(overlay);
+		}
 	}
 
 	public HashSet<String> getUnparchedNames()
