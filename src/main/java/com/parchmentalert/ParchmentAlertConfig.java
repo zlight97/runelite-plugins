@@ -11,7 +11,8 @@ public interface ParchmentAlertConfig extends Config
 	{
 		DISABLED,
 		ENABLED,
-		PVP;
+		PVP,
+		DEEP_WILD;
 	}
 
 	@ConfigItem(
@@ -22,14 +23,14 @@ public interface ParchmentAlertConfig extends Config
 	)
 	default HighlightSetting willNotify()
 	{
-		return HighlightSetting.ENABLED;
+		return HighlightSetting.DEEP_WILD;
 	}
 
 	@ConfigItem(
 			keyName = "showNames",
 			name = "Show Item Names",
 			description = "The box will list what items are unlocked",
-			position = 2
+			position = 3
 	)
 	default boolean showNames()
 	{
@@ -41,7 +42,7 @@ public interface ParchmentAlertConfig extends Config
 			keyName = "bg",
 			name = "Background Color",
 			description = "The color of the background.",
-			position = 3
+			position = 4
 	)
 	default Color bg() { return new Color(255, 0, 0, 150); }
 
@@ -49,7 +50,7 @@ public interface ParchmentAlertConfig extends Config
 		keyName = "flash",
 		name = "Flash the reminder box",
 		description = "The reminder box will flash to draw your attention to it",
-		position = 4
+		position = 5
 	)
 	default boolean flash()
 	{
@@ -61,7 +62,7 @@ public interface ParchmentAlertConfig extends Config
 			keyName = "flashColor",
 			name = "Flash Color",
 			description = "The Color to flash to.",
-			position = 5
+			position = 6
 	)
 	default Color flashColor() { return new Color(70, 61, 50, 150); }
 
@@ -73,9 +74,29 @@ public interface ParchmentAlertConfig extends Config
 			keyName = "interval",
 			name = "Flash Interval",
 			description = "Time between flash intervals",
-			position = 6
+			position = 7
 	)
 	default int interval() { return 40; }
+
+	@Range(
+			max = 56,
+			min = 0
+	)
+	@ConfigItem(
+			keyName = "wildernessLevel",
+			name = "Deep Wild Level",
+			description = "What level wilderness should the box appear in, when on Deep Wild mode. (0 includes safe zones like outside ferox)",
+			position = 2
+	)
+	default int wildernessLevel() { return 20; }
+
+	@ConfigItem(
+			keyName = "extraItems",
+			name = "Extra item IDs",
+			description = "Add an item to be notified for using a comma seperated list and item IDs",
+			position = 8
+	)
+	default String extraItems() { return ""; }
 
 }
 

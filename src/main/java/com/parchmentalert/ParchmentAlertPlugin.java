@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.Notifier;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -17,6 +18,10 @@ import net.runelite.client.ui.overlay.OverlayManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static net.runelite.api.widgets.WidgetInfo.PVP_WILDERNESS_LEVEL;
 
 @Slf4j
 @PluginDescriptor(
@@ -84,7 +89,29 @@ public class ParchmentAlertPlugin extends Plugin
 
 	private void update()
 	{
+		int wildyLevel = 0;
+		if (config.willNotify() == ParchmentAlertConfig.HighlightSetting.DEEP_WILD)
+		{
+			Widget wi = client.getWidget(PVP_WILDERNESS_LEVEL);
+
+			if(wi != null)
+				if(wi.isHidden())
+				{
+					wildyLevel = -1;
+				}
+				else {
+					String wildyText = wi.getText();
+					if(!(wildyText == null || wildyText.equals("")) && wildyText.matches(".*\\d.*")) //these are to prevent timing issues, as well as the -- outside ferox
+					{
+						Matcher m = Pattern.compile("(\\d+)").matcher(wildyText);
+//						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", " Wildy text: " + wildyText, null); //commented for debug in future
+						m.find();
+						wildyLevel = Integer.valueOf(m.group());
+					}
+				}
+		}
 		if (config.willNotify() == ParchmentAlertConfig.HighlightSetting.ENABLED ||
+				(config.willNotify() == ParchmentAlertConfig.HighlightSetting.DEEP_WILD && wildyLevel >= config.wildernessLevel()) ||
 				(config.willNotify() == ParchmentAlertConfig.HighlightSetting.PVP &&
 				(client.getVarbitValue(Varbits.IN_WILDERNESS) == 1 || client.getVarbitValue(Varbits.PVP_SPEC_ORB) == 1))) {
 			ArrayList<Integer> unparchedItems = service.getItems();

@@ -1,6 +1,7 @@
 package com.parchmentalert;
 
 import net.runelite.api.Client;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -12,6 +13,10 @@ import javax.inject.Singleton;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static net.runelite.api.widgets.WidgetInfo.PVP_WILDERNESS_LEVEL;
 
 @Singleton
 public class ParchmentAlertOverlay extends OverlayPanel {

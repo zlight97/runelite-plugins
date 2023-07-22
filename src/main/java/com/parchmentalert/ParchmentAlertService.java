@@ -56,6 +56,30 @@ public class ParchmentAlertService {
                 missingParchment.add(UnparchmentedItems[i]);
             }
         }
+        if(config.extraItems() == null || config.extraItems().equals(""))
+            return missingParchment;
+
+        String[] idStrs = config.extraItems().split(",");
+        ArrayList<Integer> extraItems = new ArrayList<>();
+        for(String s : idStrs)
+        {
+            try
+            {
+                Integer i = Integer.parseInt(s);
+                extraItems.add(i);
+
+            }
+            catch(NumberFormatException e)
+            {
+            }
+        }
+        for( int i = 0; i<extraItems.size(); i++ )
+        {
+            if((equipment != null && equipment.contains(extraItems.get(i).intValue())) || (inventory != null && inventory.contains(extraItems.get(i).intValue())))
+            {
+                missingParchment.add(extraItems.get(i));
+            }
+        }
 
         return missingParchment;
     }
