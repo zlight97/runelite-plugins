@@ -6,6 +6,7 @@ import net.runelite.client.game.ItemManager;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Singleton
 public class ParchmentAlertService {
@@ -49,15 +50,30 @@ public class ParchmentAlertService {
         ArrayList<Integer> missingParchment = new ArrayList<>();
         final ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
         final ItemContainer inventory = client.getItemContainer(InventoryID.INVENTORY);
-
-        for( int i = 0; i<UnparchmentedItems.length; i++ )
-        {
-            if((equipment != null && equipment.contains(UnparchmentedItems[i])) || (inventory != null && inventory.contains(UnparchmentedItems[i])))
-            {
-                missingParchment.add(UnparchmentedItems[i]);
+        HashSet<Integer> skippedItems = new HashSet<>();
+        HashSet<String> skippedNames = new HashSet<>();
+        if(config.ignoredItems() != null && !config.ignoredItems().isEmpty()) {
+            String[] skipIds = config.ignoredItems().split(",");
+            for (String s : skipIds) {
+                try {
+                    Integer i = Integer.parseInt(s.strip());
+                    skippedItems.add(i);
+                } catch (NumberFormatException ignored) {
+                    skippedNames.add(s.strip().toLowerCase());
+                }
             }
         }
-        if(config.extraItems() == null || config.extraItems().equals(""))
+
+        for (int unparchmentedItem : UnparchmentedItems) {
+            if (skippedItems.contains(unparchmentedItem))
+                continue;
+            if (skippedNames.contains(client.getItemDefinition(unparchmentedItem).getName().toLowerCase()))
+                continue;
+            if ((equipment != null && equipment.contains(unparchmentedItem)) || (inventory != null && inventory.contains(unparchmentedItem))) {
+                missingParchment.add(unparchmentedItem);
+            }
+        }
+        if(config.extraItems() == null || config.extraItems().isEmpty())
             return missingParchment;
 
         String[] idStrs = config.extraItems().split(",");
@@ -66,19 +82,17 @@ public class ParchmentAlertService {
         {
             try
             {
-                Integer i = Integer.parseInt(s);
+                Integer i = Integer.parseInt(s.strip());
                 extraItems.add(i);
 
             }
-            catch(NumberFormatException e)
+            catch(NumberFormatException ignored)
             {
             }
         }
-        for( int i = 0; i<extraItems.size(); i++ )
-        {
-            if((equipment != null && equipment.contains(extraItems.get(i).intValue())) || (inventory != null && inventory.contains(extraItems.get(i).intValue())))
-            {
-                missingParchment.add(extraItems.get(i));
+        for (Integer extraItem : extraItems) {
+            if ((equipment != null && equipment.contains(extraItem.intValue())) || (inventory != null && inventory.contains(extraItem.intValue()))) {
+                missingParchment.add(extraItem);
             }
         }
 

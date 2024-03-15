@@ -78,6 +78,8 @@ public class ParchmentAlertPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged configChanged)
 	{
+		if(!configChanged.getGroup().equalsIgnoreCase("Trouver Parchment Alert"))
+			return;
 		if(unparchedNames!=null)
 			unparchedNames.clear();
 
@@ -92,7 +94,7 @@ public class ParchmentAlertPlugin extends Plugin
 		int wildyLevel = 0;
 		if (config.willNotify() == ParchmentAlertConfig.HighlightSetting.DEEP_WILD)
 		{
-			Widget wi = client.getWidget(PVP_WILDERNESS_LEVEL);
+			Widget wi = client.getWidget(5898290);
 
 			if(wi != null)
 				if(wi.isHidden())
@@ -101,7 +103,7 @@ public class ParchmentAlertPlugin extends Plugin
 				}
 				else {
 					String wildyText = wi.getText();
-					if(!(wildyText == null || wildyText.equals("")) && wildyText.matches(".*\\d.*")) //these are to prevent timing issues, as well as the -- outside ferox
+					if(!(wildyText == null || wildyText.isEmpty()) && wildyText.matches(".*\\d.*")) //these are to prevent timing issues, as well as the -- outside ferox
 					{
 						Matcher m = Pattern.compile("(\\d+)").matcher(wildyText);
 //						client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", " Wildy text: " + wildyText, null); //commented for debug in future

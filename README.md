@@ -16,9 +16,17 @@ Can be configured to only be enabled in PVP areas, always on, flashing and not f
    - Change what color the box flashes when enabled
  - Flash Interval
    - Time between flashes. Smaller is faster
+ - Ignored Items
+   - Doesn't display an item listed here. Uses a comma separated list
+   - Takes name or item id
+ - Extra item IDs
+   - Shows items that are not included normally
+   - Use https://www.osrsbox.com/tools/item-search/ To lookup item ids
 
 ## Examples
 ### Items Enabled
 ![](https://i.imgur.com/jkaWJIw.png)
 ### Items Disabled
 ![](https://i.imgur.com/q2H7nPz.png)
+### Ignored Items (Tagged)
+![](https://i.imgur.com/6MU4xJG.png)

@@ -1,5 +1,6 @@
 package com.parchmentalert;
 
+import net.runelite.api.ItemID;
 import net.runelite.client.config.*;
 
 import java.awt.*;
@@ -93,10 +94,18 @@ public interface ParchmentAlertConfig extends Config
 	@ConfigItem(
 			keyName = "extraItems",
 			name = "Extra item IDs",
-			description = "Add an item to be notified for using a comma seperated list and item IDs",
-			position = 8
+			description = "Add an item to be notified for using a comma separated list and item IDs",
+			position = 9
 	)
 	default String extraItems() { return ""; }
+
+	@ConfigItem(
+			keyName = "ignoredItems",
+			name = "Ignored items",
+			description = "Use a comma separated list of item names or ids to not be checked. Use the base item (not the locked version).",
+			position = 8
+	)
+	default String ignoredItems() { return ""; }
 
 }
 
